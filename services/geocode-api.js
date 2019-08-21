@@ -1,14 +1,7 @@
-// const geoData = require('./data/geo.json');
 const request = require('superagent');
-
-// https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=YOUR_API_KEY
-
 
 const BASE_URL = 'https://maps.googleapis.com/maps/api/geocode/json';
 const API_KEY = process.env.GEOCODE_API_KEY;
-
-//const locationSearch = require('../data/location-search.json');
-
 
 module.exports = {
 
@@ -26,7 +19,7 @@ module.exports = {
                     'longitude': locationData[0].geometry.location.lng
                 };
             })
-            .catch(err => 'something went wrong');
+        ;
     }
 
 };
