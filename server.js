@@ -8,6 +8,7 @@ const cors = require('cors');
 
 const mapApi = require('./services/geocode-api.js');
 const weatherApi = require('./services/darksky-api.js');
+const eventsApi = require('./services/eventbrite-api.js');
 // Application Setup
 // - make an express app!
 const app = express();
@@ -32,24 +33,12 @@ app.get('/weather', (request, response) => {
         );
 });
 
-// const skyNet = require('./data/darksky.json');
-// function getWeather(/*location*/) {
-//     const forecastArray = [];
-//     skyNet.daily.data.forEach(dailyForecast => {
-//         const forecastDay = new Date(dailyForecast.time * 1000);
-//         const dateArray = forecastDay.toUTCString().split(' ');
-//         let day = dateArray[0].split(',')[0];
-//         let date = dateArray[1];
-//         let month = dateArray[2];
-//         let year = dateArray[3];
-//         const responseObject = {
-//             'forecast': dailyForecast.summary,
-//             'time': [day, month, date, year].join(' '),
-//         };
-//         forecastArray.push(responseObject);
-//     });
-//     return forecastArray;
-// }
+app.get('/events', (request, response) => {
+    eventsApi.getEvents(request.query)
+        .then(result => response.json(result))
+        .catch(err => response.status(500).json({ error: err.message || err })
+        );
+});
 
 // Start the server
 app.listen(PORT, () => {
