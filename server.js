@@ -7,6 +7,7 @@ const cors = require('cors');
 
 
 const mapApi = require('./services/geocode-api.js');
+const weatherApi = require('./services/darksky-api.js');
 // Application Setup
 // - make an express app!
 const app = express();
@@ -20,11 +21,16 @@ app.use(express.static('server.js'));
 app.get('/location', (request, response) => {
     mapApi.getLatLong(request.query.search)
         .then(latLongObject => response.json(latLongObject))
-        .catch(err => 'error');
+        .catch(err => response.status(500).json({ error: err.message || err })
+        );
 });
 
-// app.get('/weather', (request, response) => {
-// });
+app.get('/weather', (request, response) => {
+    weatherApi.getEightDayForecast(request.query)
+        .then(result => response.json(result))
+        .catch(err => response.status(500).json({ error: err.message || err })
+        );
+});
 
 // const skyNet = require('./data/darksky.json');
 // function getWeather(/*location*/) {
