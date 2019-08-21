@@ -4,8 +4,9 @@ require('dotenv').config();
 // Application Dependencies
 const express = require('express');
 const cors = require('cors');
-const request = require('superagent');
 
+
+const mapApi = require('./services/geocode-api.js');
 // Application Setup
 // - make an express app!
 const app = express();
@@ -17,35 +18,14 @@ app.use(cors());
 app.use(express.static('server.js'));
 
 app.get('/location', (request, response) => {
-    try {
-        const responseObject = getLatLong(request.query.search);
-        response.status(200).json(responseObject);
-    } 
-    catch(err) {
-        response.status(500).json('server.error: something blew up');
-    }
+    console.log(request.query);
+    mapApi.getLocation(request.query.search)
+        .then(location => response.json(location));
 });
 
 app.get('/weather', (request, response) => {
-    try {
-        const responseArray = getWeather(request.location);
-        response.status(200).json(responseArray);
-    } 
-    catch(err) {
-        response.status(500).json('error: something blew up');
-    }
+    
 });
-
-const geoData = require('./data/geo.json');
-function getLatLong(searchString){
-    const responseObject = {
-        'search_query': searchString,
-        'formatted_query': geoData.results[0].formatted_address,
-        'latitude': geoData.results[0].geometry.location.lat,
-        'longitude': geoData.results[0].geometry.location.lng
-    };
-    return responseObject;
-}
 
 const skyNet = require('./data/darksky.json');
 function getWeather(/*location*/) {
