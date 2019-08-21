@@ -18,33 +18,33 @@ app.use(cors());
 app.use(express.static('server.js'));
 
 app.get('/location', (request, response) => {
-    console.log(request.query);
     mapApi.getLocation(request.query.search)
-        .then(location => response.json(location));
+        .then(location => mapApi.getLatLong(location, request.query.search))
+        .then(latLongObject => response.json(latLongObject))
+        .catch(err => 'error');
 });
 
-app.get('/weather', (request, response) => {
-    
-});
+// app.get('/weather', (request, response) => {
+// });
 
-const skyNet = require('./data/darksky.json');
-function getWeather(/*location*/) {
-    const forecastArray = [];
-    skyNet.daily.data.forEach(dailyForecast => {
-        const forecastDay = new Date(dailyForecast.time * 1000);
-        const dateArray = forecastDay.toUTCString().split(' ');
-        let day = dateArray[0].split(',')[0];
-        let date = dateArray[1];
-        let month = dateArray[2];
-        let year = dateArray[3];
-        const responseObject = {
-            'forecast': dailyForecast.summary,
-            'time': [day, month, date, year].join(' '),
-        };
-        forecastArray.push(responseObject);
-    });
-    return forecastArray;
-}
+// const skyNet = require('./data/darksky.json');
+// function getWeather(/*location*/) {
+//     const forecastArray = [];
+//     skyNet.daily.data.forEach(dailyForecast => {
+//         const forecastDay = new Date(dailyForecast.time * 1000);
+//         const dateArray = forecastDay.toUTCString().split(' ');
+//         let day = dateArray[0].split(',')[0];
+//         let date = dateArray[1];
+//         let month = dateArray[2];
+//         let year = dateArray[3];
+//         const responseObject = {
+//             'forecast': dailyForecast.summary,
+//             'time': [day, month, date, year].join(' '),
+//         };
+//         forecastArray.push(responseObject);
+//     });
+//     return forecastArray;
+// }
 
 // Start the server
 app.listen(PORT, () => {

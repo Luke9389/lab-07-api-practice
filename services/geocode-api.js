@@ -7,35 +7,28 @@ const request = require('superagent');
 const BASE_URL = 'https://maps.googleapis.com/maps/api/geocode/json';
 const API_KEY = process.env.GEOCODE_API_KEY;
 
+//const locationSearch = require('../data/location-search.json');
+
 
 module.exports = {
 
-    getLocation(location){
-        console.log(location);
-        // request
-        //     .get(`https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA`)
-        //     .query({ key: API_KEY })
-        //     .then(res => console.log(res.body));
+    getLocation(location = 'toothbrush'){
+        return request
+            .get(`${BASE_URL}`)
+            .query({ address: `${location}` })
+            .query({ key: API_KEY })
+            .then(res => res.body.results)
+            .catch(err => 'something went wrong');
+    },
+
+    getLatLong(locationData, searchString) {
+        const responseObject = {
+            'search_query': searchString,
+            'formatted_query': locationData[0].formatted_address,
+            'latitude': locationData[0].geometry.location.lat,
+            'longitude': locationData[0].geometry.location.lng
+        };
+        return responseObject;
     }
 
 };
-
-
-// function getLatLong(searchString) {
-//     const responseObject = {
-//         'search_query': searchString,
-//         'formatted_query': geoData.results[0].formatted_address,
-//         'latitude': geoData.results[0].geometry.location.lat,
-//         'longitude': geoData.results[0].geometry.location.lng
-//     };
-//     return responseObject;
-// }
-
-
-// try {
-//     const responseObject = getLatLong(request.query.search);
-//     response.status(200).json(responseObject);
-// }
-// catch (err) {
-//     response.status(500).json('server.error: something blew up');
-// }
