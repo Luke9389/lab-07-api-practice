@@ -12,23 +12,21 @@ const API_KEY = process.env.GEOCODE_API_KEY;
 
 module.exports = {
 
-    getLocation(location = 'toothbrush'){
+    getLatLong(location = 'toothbrush'){
         return request
             .get(`${BASE_URL}`)
             .query({ address: `${location}` })
             .query({ key: API_KEY })
-            .then(res => res.body.results)
+            .then(res => {
+                const locationData = res.body.results;
+                return {
+                    'search_query': location,
+                    'formatted_query': locationData[0].formatted_address,
+                    'latitude': locationData[0].geometry.location.lat,
+                    'longitude': locationData[0].geometry.location.lng
+                };
+            })
             .catch(err => 'something went wrong');
-    },
-
-    getLatLong(locationData, searchString) {
-        const responseObject = {
-            'search_query': searchString,
-            'formatted_query': locationData[0].formatted_address,
-            'latitude': locationData[0].geometry.location.lat,
-            'longitude': locationData[0].geometry.location.lng
-        };
-        return responseObject;
     }
 
 };

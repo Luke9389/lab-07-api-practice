@@ -18,8 +18,7 @@ app.use(cors());
 app.use(express.static('server.js'));
 
 app.get('/location', (request, response) => {
-    mapApi.getLocation(request.query.search)
-        .then(location => mapApi.getLatLong(location, request.query.search))
+    mapApi.getLatLong(request.query.search)
         .then(latLongObject => response.json(latLongObject))
         .catch(err => 'error');
 });
